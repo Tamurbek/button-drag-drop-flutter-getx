@@ -18,7 +18,11 @@ class TableLayoutScreen extends StatelessWidget {
         actions: [
           Obx(() => DropdownButton<String>(
             value: selectedArea.value,
-            items: areas.map((String area) {
+            icon: const Icon(Icons.arrow_drop_down),
+            elevation: 16,
+            style: const TextStyle(color: Colors.black),
+            underline: Container(height: 0),
+            items: areas.map<DropdownMenuItem<String>>((String area) {
               return DropdownMenuItem<String>(
                 value: area,
                 child: Text(area),
@@ -30,11 +34,13 @@ class TableLayoutScreen extends StatelessWidget {
               }
             },
           )),
+          const SizedBox(width: 10),
           IconButton(
             icon: const Icon(Icons.add),
+            tooltip: 'Add table',
             onPressed: () => controller.addTableToArea(selectedArea.value, context),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 10),
         ],
       ),
       body: LayoutBuilder(
@@ -56,6 +62,7 @@ class TableLayoutScreen extends StatelessWidget {
                   top: y,
                   child: GestureDetector(
                     onDoubleTap: () => controller.toggleTableShape(table.id),
+                    onLongPress: () => controller.editTable(context, table),
                     child: Draggable(
                       feedback: Material(
                         color: Colors.transparent,
@@ -105,52 +112,66 @@ class TableLayoutScreen extends StatelessWidget {
   }
 
   Widget _buildTableWidget(TableModel table) {
-    final borderRadius = table.isRound
-        ? BorderRadius.circular(table.width / 2)
-        : BorderRadius.circular(12);
-
-    final boxShadow = [
-      BoxShadow(
-        color: Colors.black26,
-        blurRadius: 4,
-        offset: const Offset(2, 2),
-      ),
-    ];
-
     return Container(
       width: table.width,
       height: table.height,
       decoration: BoxDecoration(
         color: _getAreaColor(table.area),
-        borderRadius: borderRadius,
-        boxShadow: boxShadow,
-      ),
+        borderRadius: table.isRound
+            ? BorderRadius.circular(table.width / 2)
+            : BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.3),
+            blurRadius: 6,
+            offset: const Offset(2, 3),
+          ),
+        ],
+      ), // <- shu yerda oldin xatolik bor edi
       child: Center(
-        child: Text(
-          "Table ${table.id}\n(${table.area})",
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-            fontSize: 14,
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                table.name.isNotEmpty ? table.name : "Table ${table.id}",
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                "(${table.area})",
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 10,
+                  color: Colors.white70,
+                ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
+
   Color _getAreaColor(String area) {
     switch (area) {
       case 'Main Hall':
         return Colors.brown[400]!;
       case 'Garden':
-        return Colors.green[400]!;
+        return Colors.green[600]!;
       case 'Terrace':
-        return Colors.blue[400]!;
+        return Colors.blue[500]!;
       case 'Private Room':
-        return Colors.purple[400]!;
+        return Colors.purple[500]!;
       default:
-        return Colors.grey[400]!;
+        return Colors.grey[500]!;
     }
   }
 }
@@ -207,8 +228,9 @@ class _ResizableWidgetState extends State<ResizableWidget> {
               width: 20,
               height: 20,
               decoration: BoxDecoration(
-                color: Colors.blue,
+                color: Colors.blue[700],
                 borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.white, width: 2),
               ),
             ),
           ),

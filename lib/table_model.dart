@@ -8,6 +8,7 @@ class TableModel {
   final String area;
   final double originalScreenWidth;
   final double originalScreenHeight;
+  String name;
 
   TableModel({
     required this.id,
@@ -19,6 +20,7 @@ class TableModel {
     required this.area,
     required this.originalScreenWidth,
     required this.originalScreenHeight,
+    this.name = '',
   });
 
   TableModel copyWith({
@@ -31,6 +33,7 @@ class TableModel {
     String? area,
     double? originalScreenWidth,
     double? originalScreenHeight,
+    String? name,
   }) {
     return TableModel(
       id: id ?? this.id,
@@ -42,6 +45,7 @@ class TableModel {
       area: area ?? this.area,
       originalScreenWidth: originalScreenWidth ?? this.originalScreenWidth,
       originalScreenHeight: originalScreenHeight ?? this.originalScreenHeight,
+      name: name ?? this.name,
     );
   }
 }

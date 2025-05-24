@@ -37,6 +37,17 @@ class TableController extends GetxController {
     }
   }
 
+  void updateTableName(int id, String newName) {
+    final index = tables.indexWhere((t) => t.id == id);
+    if (index != -1) {
+      tables[index] = tables[index].copyWith(name: newName);
+    }
+  }
+
+  void deleteTable(int id) {
+    tables.removeWhere((table) => table.id == id);
+  }
+
   void addTableToArea(String area, BuildContext context) {
     if (area == 'All Areas') area = 'Main Hall';
 
@@ -73,6 +84,7 @@ class TableController extends GetxController {
         area: 'Main Hall',
         originalScreenWidth: screenWidth,
         originalScreenHeight: screenHeight,
+        name: 'Window View',
       ),
       TableModel(
         id: nextId++,
@@ -81,6 +93,7 @@ class TableController extends GetxController {
         area: 'Main Hall',
         originalScreenWidth: screenWidth,
         originalScreenHeight: screenHeight,
+        name: 'VIP Table',
       ),
       TableModel(
         id: nextId++,
@@ -97,7 +110,57 @@ class TableController extends GetxController {
         area: 'Terrace',
         originalScreenWidth: screenWidth,
         originalScreenHeight: screenHeight,
+        name: 'Sunset Table',
       ),
     ]);
+  }
+
+  void editTable(BuildContext context, TableModel table) {
+    final nameController = TextEditingController(text: table.name);
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Edit Table ${table.id}"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: InputDecoration(
+                labelText: 'Table Name',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                TextButton(
+                  onPressed: () {
+                    deleteTable(table.id);
+                    Navigator.pop(context);
+                  },
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.red,
+                  ),
+                  child: Text('DELETE'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    updateTableName(table.id, nameController.text);
+                    Navigator.pop(context);
+                  },
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.blue,
+                  ),
+                  child: Text('SAVE'),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
