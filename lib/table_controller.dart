@@ -48,7 +48,7 @@ class TableController extends GetxController {
     tables.removeWhere((table) => table.id == id);
   }
 
-  void addTableToArea(String area, BuildContext context) {
+  void addTableToArea(String area, BuildContext context, double gridSize) {
     if (area == 'All Areas') area = 'Main Hall';
 
     final mediaQuery = MediaQuery.of(context);
@@ -57,17 +57,20 @@ class TableController extends GetxController {
         AppBar().preferredSize.height -
         mediaQuery.padding.top;
 
+    final initialX = (screenWidth * 0.2 / gridSize).round() * gridSize;
+    final initialY = (screenHeight * 0.2 / gridSize).round() * gridSize;
+
     tables.add(TableModel(
       id: nextId++,
-      x: screenWidth * 0.2,
-      y: screenHeight * 0.2,
+      x: initialX,
+      y: initialY,
       area: area,
       originalScreenWidth: screenWidth,
       originalScreenHeight: screenHeight,
     ));
   }
 
-  void loadInitialTables(BuildContext context) {
+  void loadInitialTables(BuildContext context, double gridSize) {
     if (tables.isNotEmpty) return;
 
     final mediaQuery = MediaQuery.of(context);
@@ -79,8 +82,8 @@ class TableController extends GetxController {
     tables.addAll([
       TableModel(
         id: nextId++,
-        x: screenWidth * 0.1,
-        y: screenHeight * 0.1,
+        x: (screenWidth * 0.1 / gridSize).round() * gridSize,
+        y: (screenHeight * 0.1 / gridSize).round() * gridSize,
         area: 'Main Hall',
         originalScreenWidth: screenWidth,
         originalScreenHeight: screenHeight,
@@ -88,8 +91,8 @@ class TableController extends GetxController {
       ),
       TableModel(
         id: nextId++,
-        x: screenWidth * 0.4,
-        y: screenHeight * 0.3,
+        x: (screenWidth * 0.4 / gridSize).round() * gridSize,
+        y: (screenHeight * 0.3 / gridSize).round() * gridSize,
         area: 'Main Hall',
         originalScreenWidth: screenWidth,
         originalScreenHeight: screenHeight,
@@ -97,20 +100,11 @@ class TableController extends GetxController {
       ),
       TableModel(
         id: nextId++,
-        x: screenWidth * 0.2,
-        y: screenHeight * 0.6,
+        x: (screenWidth * 0.2 / gridSize).round() * gridSize,
+        y: (screenHeight * 0.6 / gridSize).round() * gridSize,
         area: 'Garden',
         originalScreenWidth: screenWidth,
         originalScreenHeight: screenHeight,
-      ),
-      TableModel(
-        id: nextId++,
-        x: screenWidth * 0.7,
-        y: screenHeight * 0.4,
-        area: 'Terrace',
-        originalScreenWidth: screenWidth,
-        originalScreenHeight: screenHeight,
-        name: 'Sunset Table',
       ),
     ]);
   }
