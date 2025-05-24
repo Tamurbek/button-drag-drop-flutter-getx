@@ -1,24 +1,103 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'table_model.dart';
-import 'package:flutter/foundation.dart'; // debugPrint uchun
 
 class TableController extends GetxController {
   var tables = <TableModel>[].obs;
+  var nextId = 1;
 
-  void updatePosition(int id, double x, double y) {
-    int index = tables.indexWhere((t) => t.id == id);
+  void updatePosition(int id, double x, double y, double currentWidth, double currentHeight) {
+    final index = tables.indexWhere((t) => t.id == id);
     if (index != -1) {
-      tables[index].x = x;
-      tables[index].y = y;
-      tables.refresh();
+      tables[index] = tables[index].copyWith(
+        x: x,
+        y: y,
+        originalScreenWidth: currentWidth,
+        originalScreenHeight: currentHeight,
+      );
     }
   }
 
-  void loadInitialTables() {
-    tables.value = [
-      TableModel(id: 1, x: 50, y: 100),
-      TableModel(id: 2, x: 180, y: 250),
-      TableModel(id: 3, x: 100, y: 400),
-    ];
+  void updateSize(int id, double width, double height) {
+    final index = tables.indexWhere((t) => t.id == id);
+    if (index != -1) {
+      tables[index] = tables[index].copyWith(
+        width: width,
+        height: height,
+      );
+    }
+  }
+
+  void toggleTableShape(int id) {
+    final index = tables.indexWhere((t) => t.id == id);
+    if (index != -1) {
+      tables[index] = tables[index].copyWith(
+        isRound: !tables[index].isRound,
+      );
+    }
+  }
+
+  void addTableToArea(String area, BuildContext context) {
+    if (area == 'All Areas') area = 'Main Hall';
+
+    final mediaQuery = MediaQuery.of(context);
+    final screenWidth = mediaQuery.size.width;
+    final screenHeight = mediaQuery.size.height -
+        AppBar().preferredSize.height -
+        mediaQuery.padding.top;
+
+    tables.add(TableModel(
+      id: nextId++,
+      x: screenWidth * 0.2,
+      y: screenHeight * 0.2,
+      area: area,
+      originalScreenWidth: screenWidth,
+      originalScreenHeight: screenHeight,
+    ));
+  }
+
+  void loadInitialTables(BuildContext context) {
+    if (tables.isNotEmpty) return;
+
+    final mediaQuery = MediaQuery.of(context);
+    final screenWidth = mediaQuery.size.width;
+    final screenHeight = mediaQuery.size.height -
+        AppBar().preferredSize.height -
+        mediaQuery.padding.top;
+
+    tables.addAll([
+      TableModel(
+        id: nextId++,
+        x: screenWidth * 0.1,
+        y: screenHeight * 0.1,
+        area: 'Main Hall',
+        originalScreenWidth: screenWidth,
+        originalScreenHeight: screenHeight,
+      ),
+      TableModel(
+        id: nextId++,
+        x: screenWidth * 0.4,
+        y: screenHeight * 0.3,
+        area: 'Main Hall',
+        originalScreenWidth: screenWidth,
+        originalScreenHeight: screenHeight,
+      ),
+      TableModel(
+        id: nextId++,
+        x: screenWidth * 0.2,
+        y: screenHeight * 0.6,
+        area: 'Garden',
+        originalScreenWidth: screenWidth,
+        originalScreenHeight: screenHeight,
+      ),
+      TableModel(
+        id: nextId++,
+        x: screenWidth * 0.7,
+        y: screenHeight * 0.4,
+        area: 'Terrace',
+        originalScreenWidth: screenWidth,
+        originalScreenHeight: screenHeight,
+      ),
+    ]);
   }
 }
